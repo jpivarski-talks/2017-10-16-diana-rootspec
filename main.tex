@@ -20,13 +20,14 @@
 \usepackage{bold-extra}
 \usepackage{minted}
 \usepackage[thicklines]{cancel}
+\usepackage{fancyvrb}
 
 \xdefinecolor{dianablue}{rgb}{0.18,0.24,0.31}
 \xdefinecolor{darkblue}{rgb}{0.1,0.1,0.7}
-\xdefinecolor{darkgreen}{rgb}{0,0.5,0}
+\xdefinecolor{darkgreen}{rgb}{0,0.3,0}
 \xdefinecolor{darkgrey}{rgb}{0.35,0.35,0.35}
 \xdefinecolor{darkorange}{rgb}{0.8,0.5,0}
-\xdefinecolor{darkred}{rgb}{0.7,0,0}
+\xdefinecolor{brown}{rgb}{0.6,0.3,0}
 \definecolor{darkgreen}{rgb}{0,0.6,0}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
@@ -132,16 +133,205 @@ Arrow/Feather & 2016 & \href{https://arrow.apache.org/docs/memory_layout.html}{\
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{l c p{4.5 cm} l}
-& language & purpose & maintainer \\\hline
+project & language & purpose & maintainer \\\hline
 ROOT & C++ & main project & the ROOT Team (Philippe Canal) \\
 JsRoot & Javascript & interacting with ROOT in the browser or standalone & the ROOT Team (Sergey Linev) \\
-RIO & C++ & embedded in GEANT-4 & Guy Barrand \\
-root4j & Java & Spark and other big data & Viktor Khristenko \\
-rootio & Go & go-hep ecosystem & Sebastien Binet \\
+RIO & C++ & embedded in GEANT-4 & Guy Barrand? \\
+root4j & Java & Spark and other Big Data & Viktor Khristenko \\
+rootio & Go & go-hep ecosystem in Go & Sebastien Binet \\
 uproot & Python & BulkIO-style Numpy access, pip-installable root\_numpy, understanding ROOT I/O, prototyping & Jim Pivarski (me)
 \end{tabular}
 \end{center}
 \end{frame}
 
+\begin{frame}[fragile]{Sample code from uproot}
+\vspace{0.5 cm}
+\small
+\begin{minted}{python}
+fNbytes, fVersion, fObjlen, fDatime, fKeylen, fCycle = \
+                                         file.readfields("!ihiIhh")
+
+if fVersion > 1000:
+    fSeekKey, fSeekPdir = file.readfields("!qq")   # 64-bit
+else:
+    fSeekKey, fSeekPdir = file.readfields("!ii")   # 32-bit
+
+fClassName = file.readstring()  # byte or int32 size prefix
+fName      = file.readstring()
+fTitle     = file.readstring()
+\end{minted}
+
+\vspace{0.25 cm}
+\begin{center}
+\uncover<2->{\textcolor{darkblue}{\Large This is imperative Python code, but it doesn't need to be.}}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{As a declarative specification}
+\vspace{0.4 cm}
+
+\begin{columns}
+\column{0.45\linewidth}
+\vspace{-0.25 cm}
+\scriptsize
+\begin{onlyenv}<1>
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{darkgreen}{\textbf{TKey:}}
+  \textcolor{darkgreen}{\textbf{assert:}}
+    \textcolor{blue}{\textbf{-}} \textcolor{brown}{$size == fKeylen}  \textcolor{mauve}{# check!}
+  \textcolor{darkgreen}{\textbf{members:}}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fNbytes:}} \textcolor{brown}{int32}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fVersion:}} \textcolor{brown}{int16}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fObjlen:}} \textcolor{brown}{int32}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fDatime:}} \textcolor{brown}{int32}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fKeylen:}} \textcolor{brown}{int16}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fCycle:}} \textcolor{brown}{int16}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{if:}}
+        \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{case:}} \textcolor{brown}{version > 1000}
+          \textcolor{darkgreen}{\textbf{then:}}
+            \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fSeekKey:}} \textcolor{brown}{int64}  \textcolor{mauve}{# big}
+            \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fSeekPdir:}} \textcolor{brown}{int64}
+        \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{else:}}
+            \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fSeekKey:}} \textcolor{brown}{int32}  \textcolor{mauve}{# small}
+            \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fSeekPdir:}} \textcolor{brown}{int32}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fClassName:}} \textcolor{brown}{string}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fName:}} \textcolor{brown}{string}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{fTitle:}} \textcolor{brown}{string}
+\end{Verbatim}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{darkgreen}{\textbf{TDirectory:}}
+  \textcolor{darkgreen}{\textbf{members:}}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{version:}} \textcolor{brown}{int16}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{ctime:}} \textcolor{brown}{int32}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{mtime:}} \textcolor{brown}{int32}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{nbyteskeys:}} \textcolor{brown}{int32}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{nbytesname:}} \textcolor{brown}{int32}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{if:}}
+        \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{case:}} \textcolor{brown}{version <= 1000}
+          \textcolor{darkgreen}{\textbf{then:}}
+            \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{seekdir:}} \textcolor{brown}{int32}
+            \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{seekparent:}} \textcolor{brown}{int32}
+            \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{seekkeys:}} \textcolor{brown}{int32}
+        \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{else:}}
+            \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{seekdir:}} \textcolor{brown}{int64}
+            \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{seekparent:}} \textcolor{brown}{int64}
+            \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{seekkeys:}} \textcolor{brown}{int64}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{keys:}}
+        \textcolor{darkgreen}{\textbf{type:}} \textcolor{brown}{TKeys}
+        \textcolor{darkgreen}{\textbf{at:}} \textcolor{brown}{seekkeys} \textcolor{mauve}{# seek to this value}
+\end{Verbatim}
+\end{onlyenv}
+\begin{onlyenv}<3>
+\begin{Verbatim}[commandchars=\\\{\}]
+\textcolor{darkgreen}{\textbf{TKeys:}}
+  \textcolor{darkgreen}{\textbf{doc:}} \textcolor{blue}{\textbf{|}}
+    \textcolor{brown}{There is no ROOT class named}
+    \textcolor{brown}{"TKeys," but it's useful to define}
+    \textcolor{brown}{one here to represent a header}
+    \textcolor{brown}{TKey followed by an arbitrary}
+    \textcolor{brown}{number of TKeys.}
+  \textcolor{darkgreen}{\textbf{members:}}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{header:}} \textcolor{brown}{TKey}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{nkeys:}}
+        \textcolor{darkgreen}{\textbf{type:}} \textcolor{brown}{int32}
+        \textcolor{darkgreen}{\textbf{at:}} \textcolor{brown}{$pos + header.keylen}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{keys:}} \textcolor{blue}{\textbf{\{}}\textcolor{darkgreen}{\textbf{array:}} \textcolor{brown}{TKey}, \textcolor{darkgreen}{\textbf{size:}} \textcolor{brown}{nkeys}\textcolor{blue}{\textbf{\}}}
+
+\textcolor{darkgreen}{\textbf{TBuffer\_ReadVersion:}}
+  \textcolor{darkgreen}{\textbf{doc:}} \textcolor{brown}{What TBuffer::ReadVersion does.}
+  \textcolor{darkgreen}{\textbf{members:}}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{bytecount:}}
+        \textcolor{mauve}{# needs to be transformed first}
+        \textcolor{darkgreen}{\textbf{type:}} \textcolor{brown}{uint32}
+        \textcolor{darkgreen}{\textbf{postprocess:}}  \textcolor{blue}{\textbf{|}}
+            \textcolor{brown}{bytecount & ~uint32(0x40000000)}
+    \textcolor{blue}{\textbf{-}} \textcolor{darkgreen}{\textbf{version:}} \textcolor{brown}{uint16}
+\end{Verbatim}
+\end{onlyenv}
+
+\column{0.5\linewidth}
+YAML is a declarative data language like JSON, but optimized for human input, often used for configuration files.
+
+\vspace{0.25 cm}
+With additional interpretation, we can use it as a DSL for describing ROOT layout.
+\begin{itemize}
+\item An {\it executable} specification!
+\item Says nothing about eagerness vs.\ laziness of reading, leaving that to the implementation.
+\item Resembles streamer info, apart from if-then branches.
+\item Can add features as needed, but syntax is fixed.
+\end{itemize}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Eagerness vs.\ laziness}
+\vspace{0.5 cm}
+Selective reading is one of the most important features of ROOT I/O.
+\begin{itemize}
+\item In C++, ROOT reads TKey and TBasket data in response to user requests.
+\item In Python, I additionally want to avoid creating strings and other non-primitives before they're accessed (as Python ``properties'').
+\end{itemize}
+
+\vspace{0.25 cm}
+\uncover<2->{These decisions are very implementation-dependent, and shouldn't be a part of a specification.}
+\begin{itemize}
+\item<2-> Although the YAML file describes the order of fields in the bytestream, they don't have to be read in that order.
+\item<3-> As a demonstration, I implemented a {\it purely} lazy ROOT TH1F reader ({\it nothing} is read until explicitly referenced), configured by a YAML file:
+\end{itemize}
+\begin{center}
+\uncover<3->{\href{https://github.com/jpivarski/rootspec}{\textcolor{blue}{https://github.com/jpivarski/rootspec}}}
+\end{center}
+\end{frame}
+
+\begin{frame}{Streamer info}
+Most ROOT classes are already specified to this degree, not in a document, but in the ROOT files themselves, as TStreamerInfo.
+
+\vspace{0.5 cm}
+Includes some very basic classes, like TTree, TList, TNamed, TObjArray\ldots
+
+\vspace{0.5 cm}
+No reason to duplicate this (and the version dependencies would be complicated to express in branches, anyway).
+\end{frame}
+
+\begin{frame}{How far can this kind of documentation go?}
+\vspace{0.5 cm}
+
+\textcolor{darkblue}{Brian's wish list:}
+\begin{itemize}\setlength{\itemsep}{0.25 cm}
+\item Container classes to ``bootstrap'' to the point where we can read streamers: TFile, TKey, TBasket, TDirectory, the streamer classes themselves\ldots
+
+\item How STL classes are streamed (may rewrite STL documentation in our format).
+
+\item ROOT's custom framing for compressed blocks (9 bytes before ZLIB, LZMA, and 17 before LZ4).
+
+\item How streamers are generated from classes.
+
+\item How classes are split into branches.
+
+\item How cross-references are keyed by byte positions (relative to what origin).
+\end{itemize}
+
+\vspace{0.25 cm}
+The last three could be hard to express declaratively\ldots
+\end{frame}
+
+\begin{frame}{Conclusions}
+\vspace{1 cm}
+A non-prescriptive specification of how ROOT I/O works would benefit data preservation, the process of changing ROOT I/O, and alternate implementations.
+
+\vspace{0.5 cm}
+\uncover<2->{Such a document can be an unofficial description (as Erik van Oosten did for Thrift).}
+
+\vspace{0.5 cm}
+\uncover<3->{It can also be executable, to verify that it's correct on test samples and to ensure that it doesn't get out-of-date.}
+
+\vspace{0.5 cm}
+\uncover<4->{I began a demonstration-level project documenting some core ROOT classes with YAML, which can configure readers anywhere on the eager-to-lazy spectrum (by implementing purely lazy; eager is much more straightforward).}
+
+\begin{center}
+\uncover<4->{\href{https://github.com/jpivarski/rootspec}{\textcolor{blue}{https://github.com/jpivarski/rootspec}}}
+\end{center}
+\end{frame}
 
 \end{document}
