@@ -69,23 +69,33 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Number of implementations}
-\vspace{0.25 cm}
-\begin{center}
+\begin{frame}{}
+\vspace{1.25 cm}
+\begin{columns}
+\column{1.1\linewidth}
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{l c c c}
 & inception & specification & implementations \\\hline
-Protocol buffers &  & \href{https://developers.google.com/protocol-buffers/docs/encoding}{\textcolor{blue}{\tiny https://developers.google.com/protocol-buffers/docs/encoding}} & 20 \\
-Thrift &  & $\surd$ & 15 \\
-Avro &  & $\surd$ & 13 \\
-Parquet & 2013 & \href{http://parquet.apache.org/documentation/latest/}{\textcolor{blue}{\tiny http://parquet.apache.org/documentation/latest/}} & 5 \\
-Arrow/Feather & 2016 & \href{https://arrow.apache.org/docs/memory_layout.html}{\textcolor{blue}{\tiny https://arrow.apache.org/docs/memory\_layout.html}} & 7 \\
-netCDF,HDF4/5 & 1992 & \href{https://support.hdfgroup.org/HDF5/doc/H5.format.html}{\textcolor{blue}{\tiny https://support.hdfgroup.org/HDF5/doc/H5.format.html}} & 35 \\
+
 FITS & 1981 & \href{https://fits.gsfc.nasa.gov/standard30/fits_standard30aa.pdf}{\textcolor{blue}{\tiny https://fits.gsfc.nasa.gov/standard30/fits\_standard30aa.pdf}} & 38 \\
-Pickle & 1996 & no? & 3? \\
-ROOT & 1995 & & 5
+
+netCDF,HDF4/5 & 1992 & \href{https://support.hdfgroup.org/HDF5/doc/H5.format.html}{\textcolor{blue}{\tiny https://support.hdfgroup.org/HDF5/doc/H5.format.html}} & 35 \\
+
+ROOT & 1995 & {\tiny some class headers like \href{https://root.cern.ch/doc/master/classTFile.html}{\textcolor{blue}{TFile}} and \href{https://root.cern.ch/doc/master/classTKey.html}{\textcolor{blue}{TKey}}; not enough info to read a file} & 5 \\
+
+Pickle & 1996 & {\tiny {\it implementation} changes: 1$\to$2 \href{http://legacy.python.org/dev/peps/pep-0307/}{\textcolor{blue}{PEP-307}}, 3$\to$4 \href{https://www.python.org/dev/peps/pep-3154/}{\textcolor{blue}{PEP-3154}}; not a real spec} & 3 \\
+
+Protocol buffers & 2001 & \href{https://developers.google.com/protocol-buffers/docs/encoding}{\textcolor{blue}{\tiny https://developers.google.com/protocol-buffers/docs/encoding}} & 20 \\
+
+Thrift & 2007 & {\tiny {\bf UNOFFICIAL:} \href{https://erikvanoosten.github.io/thrift-missing-specification/}{\textcolor{blue}{\tiny https://erikvanoosten.github.io/thrift-missing-specification/}}} & 15 \\
+
+Avro & 2009 & \href{http://avro.apache.org/docs/current/spec.html}{\textcolor{blue}{\tiny http://avro.apache.org/docs/current/spec.html}} & 13 \\
+
+Parquet & 2013 & \href{http://parquet.apache.org/documentation/latest/}{\textcolor{blue}{\tiny http://parquet.apache.org/documentation/latest/}} & 5 \\
+
+Arrow/Feather & 2016 & \href{https://arrow.apache.org/docs/memory_layout.html}{\textcolor{blue}{\tiny https://arrow.apache.org/docs/memory\_layout.html}} & 7 \\
 \end{tabular}
-\end{center}
+\end{columns}
 \end{frame}
 
 \href{}{\textcolor{blue}{\tiny }}
