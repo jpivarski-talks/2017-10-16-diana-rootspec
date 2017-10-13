@@ -52,8 +52,42 @@
 
 %%%% START
 
-\begin{frame}{First slide}
-\vspace{0.15 cm}
+\begin{frame}{}
+\vspace{0.5 cm}
+\begin{center}
+\large ROOT is a file format.
+\end{center}
+
+\begin{itemize}
+\item It's like HDF5 in that it organizes data objects in a filesystem-like structure.
+\item It's like Avro in that it defines the structure of the classes it stores.
+\item It's like Parquet in that it can split classes into columns for efficient access.
+\item It's more like Arrow/Feather in the way that it implements splitting.
+\item It's like Pickle in that its data model encompasses an entire language (C++ rather than Python).
+\item It's like FITS in that it was developed by a scientific community for that community.
+\item It's unlike the above in that it has only one implementation (until recently).
+\end{itemize}
 \end{frame}
+
+\begin{frame}{Number of implementations}
+\vspace{0.25 cm}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{l c c c}
+& inception & specification & implementations \\\hline
+Protocol buffers &  & \href{https://developers.google.com/protocol-buffers/docs/encoding}{\textcolor{blue}{\tiny https://developers.google.com/protocol-buffers/docs/encoding}} & 20 \\
+Thrift &  & $\surd$ & 15 \\
+Avro &  & $\surd$ & 13 \\
+Parquet & 2013 & \href{http://parquet.apache.org/documentation/latest/}{\textcolor{blue}{\tiny http://parquet.apache.org/documentation/latest/}} & 5 \\
+Arrow/Feather & 2016 & \href{https://arrow.apache.org/docs/memory_layout.html}{\textcolor{blue}{\tiny https://arrow.apache.org/docs/memory\_layout.html}} & 7 \\
+netCDF,HDF4/5 & 1992 & \href{https://support.hdfgroup.org/HDF5/doc/H5.format.html}{\textcolor{blue}{\tiny https://support.hdfgroup.org/HDF5/doc/H5.format.html}} & 35 \\
+FITS & 1981 & \href{https://fits.gsfc.nasa.gov/standard30/fits_standard30aa.pdf}{\textcolor{blue}{\tiny https://fits.gsfc.nasa.gov/standard30/fits\_standard30aa.pdf}} & 38 \\
+Pickle & 1996 & no? & 3? \\
+ROOT & 1995 & & 5
+\end{tabular}
+\end{center}
+\end{frame}
+
+\href{}{\textcolor{blue}{\tiny }}
 
 \end{document}
