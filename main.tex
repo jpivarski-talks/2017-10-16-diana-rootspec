@@ -53,24 +53,24 @@
 %%%% START
 
 \begin{frame}{}
-\vspace{0.5 cm}
+\vspace{0.75 cm}
 \begin{center}
 \large ROOT is a file format.
 \end{center}
 
-\begin{itemize}
+\begin{itemize}\setlength{\itemsep}{0.2 cm}
 \item It's like HDF5 in that it organizes data objects in a filesystem-like structure.
 \item It's like Avro in that it defines the structure of the classes it stores.
 \item It's like Parquet in that it can split classes into columns for efficient access.
-\item It's more like Arrow/Feather in the way that it implements splitting.
+\item Although it's more like Arrow/Feather in the way that it implements splitting.
 \item It's like Pickle in that its data model encompasses an entire language (C++ rather than Python).
 \item It's like FITS in that it was developed by a scientific community for that community.
-\item It's unlike the above in that it has only one implementation (until recently).
+\item It's unlike most of the above in that it doesn't have a formal specification.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{}
-\vspace{1.25 cm}
+\begin{frame}{Specifications and implementations: what I could find}
+\vspace{0.5 cm}
 \begin{columns}
 \column{1.1\linewidth}
 \renewcommand{\arraystretch}{1.5}
@@ -81,9 +81,9 @@ FITS & 1981 & \href{https://fits.gsfc.nasa.gov/standard30/fits_standard30aa.pdf}
 
 netCDF,HDF4/5 & 1992 & \href{https://support.hdfgroup.org/HDF5/doc/H5.format.html}{\textcolor{blue}{\tiny https://support.hdfgroup.org/HDF5/doc/H5.format.html}} & 35 \\
 
-ROOT & 1995 & {\tiny some class headers like \href{https://root.cern.ch/doc/master/classTFile.html}{\textcolor{blue}{TFile}} and \href{https://root.cern.ch/doc/master/classTKey.html}{\textcolor{blue}{TKey}}; not enough info to read a file} & 5 \\
+ROOT & 1995 & {\tiny some class headers like \href{https://root.cern.ch/doc/master/classTFile.html}{\textcolor{blue}{TFile}} and \href{https://root.cern.ch/doc/master/classTKey.html}{\textcolor{blue}{TKey}}; not enough info to read a file} & 6 \\
 
-Pickle & 1996 & {\tiny {\it implementation} changes: 1$\to$2 \href{http://legacy.python.org/dev/peps/pep-0307/}{\textcolor{blue}{PEP-307}}, 3$\to$4 \href{https://www.python.org/dev/peps/pep-3154/}{\textcolor{blue}{PEP-3154}}; not a real spec} & 3 \\
+Pickle & 1996 & {\tiny {\it implementation} changes: 1$\to$2 \href{http://legacy.python.org/dev/peps/pep-0307/}{\textcolor{blue}{PEP-307}}, 3$\to$4 \href{https://www.python.org/dev/peps/pep-3154/}{\textcolor{blue}{PEP-3154}}; not a real spec} & 4 \\
 
 Protocol buffers & 2001 & \href{https://developers.google.com/protocol-buffers/docs/encoding}{\textcolor{blue}{\tiny https://developers.google.com/protocol-buffers/docs/encoding}} & 20 \\
 
@@ -98,6 +98,50 @@ Arrow/Feather & 2016 & \href{https://arrow.apache.org/docs/memory_layout.html}{\
 \end{columns}
 \end{frame}
 
-\href{}{\textcolor{blue}{\tiny }}
+\begin{frame}{}
+\vspace{1 cm}
+\begin{columns}[t]
+\column{0.5\linewidth}
+\mbox{ } \hfill \underline{\large Why not specify?} \hfill \mbox{ }
+
+\vspace{0.25 cm}
+\begin{itemize}
+\item inhibits development
+\item human-readable documents get out of date
+\item personnel already limited
+\item streamer info already specifies most classes dynamically
+\item ROOT C++ implementation must be primary
+\end{itemize}
+
+\column{0.5\linewidth}
+\mbox{ } \hfill \underline{\large Why specify?} \hfill \mbox{ }
+
+\vspace{0.25 cm}
+\begin{itemize}
+\item better data preservation
+\item clarifies invariants that are hard to express or not local in code
+\item formal process for adding I/O features
+\item allows alternate I/O projects to maintain themselves
+\item may be descriptive, rather than prescriptive
+\end{itemize}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}{What alternate implementations?}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{l c p{4.5 cm} l}
+& language & purpose & maintainer \\\hline
+ROOT & C++ & main project & the ROOT Team (Philippe Canal) \\
+JsRoot & Javascript & interacting with ROOT in the browser or standalone & the ROOT Team (Sergey Linev) \\
+RIO & C++ & embedded in GEANT-4 & Guy Barrand \\
+root4j & Java & Spark and other big data & Viktor Khristenko \\
+rootio & Go & go-hep ecosystem & Sebastien Binet \\
+uproot & Python & BulkIO-style Numpy access, pip-installable root\_numpy, understanding ROOT I/O, prototyping & Jim Pivarski (me)
+\end{tabular}
+\end{center}
+\end{frame}
+
 
 \end{document}
